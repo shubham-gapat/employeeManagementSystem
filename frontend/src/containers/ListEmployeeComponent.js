@@ -14,6 +14,7 @@ import {
 
 import {employeesListURL,
 employeeCreateURL} from '../constants';
+import { Link } from 'react-router-dom';
 
 
 class ListEmployeeComponent extends Component {
@@ -72,8 +73,8 @@ class ListEmployeeComponent extends Component {
         })
     }
 
-    handleAddOrUpdate(e){
-        e.preventDefault()
+    handleAddOrUpdate=(e)=>{
+        e.preventDefault();
         console.log('ITEM:', this.state.activeEmployee)
     
         var url = employeeCreateURL
@@ -90,7 +91,7 @@ class ListEmployeeComponent extends Component {
         authAxios
         .post(url, {
           headers:{
-            'Content-type':'application/json',
+            'Authorization' : 'Bearer '+localStorage.getItem('token')
           },
           body:JSON.stringify(this.state.activeItem)
         }).then((response)  => {
@@ -134,9 +135,16 @@ class ListEmployeeComponent extends Component {
         )
       }
 
-    onClickEdit=(employee)=>{
+    onClickEdit=(e,employee)=>{
         this.startEdit(employee);
-        this.setFirstOpen()
+        this.setFirstOpen();
+        
+    }
+
+    onClickCreate=(e)=>{
+        this.setFirstOpen();
+        this.setSecondOpen();
+        this.handleAddOrUpdate(e)
     }
 
     handleChange = input => e => {
@@ -177,6 +185,7 @@ class ListEmployeeComponent extends Component {
                 <Header as='h2'>Employees List</Header>
                 <Container textAlign='right'>
                     <Button content='Add Employee' primary onClick={this.setFirstOpen}/>
+                    <Link to='/checkout'><Button content='Subscribe' secondary /></Link>
                     <Modal
                         onClose={ this.setFirstOpen}
                         onOpen={ this.setFirstOpen}
@@ -215,7 +224,7 @@ class ListEmployeeComponent extends Component {
                             <Button
                             icon='check'
                             content='All Done'
-                            onClick={ this.setSecondOpen}
+                            onClick={ (e)=>this.onClickCreate(e)}
                             />
                         </Modal.Actions>
                         </Modal>

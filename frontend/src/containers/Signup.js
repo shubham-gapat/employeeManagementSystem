@@ -8,7 +8,7 @@ import {
   Segment
 } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { NavLink, Link} from "react-router-dom";
+import { NavLink, Link, Redirect} from "react-router-dom";
 import { authSignup } from "../store/actions/auth";
 
 class RegistrationForm extends React.Component {
@@ -34,8 +34,10 @@ class RegistrationForm extends React.Component {
 
   render() {
     const { firstname,lastname,email,password,address,dob,company } = this.state;
-    const { error, loading,  } = this.props;
-    
+    const { error, loading,status_code  } = this.props;
+    if (status_code) {
+      return <Redirect to="/login" />;
+    }
     return (
       <Grid
         textAlign="center"
@@ -115,7 +117,6 @@ class RegistrationForm extends React.Component {
                   iconPosition="left"
                   placeholder="Enter Company Name"
                 />
-                <Link to='/login'>
                 <Button
                   color="teal"
                   fluid
@@ -125,7 +126,6 @@ class RegistrationForm extends React.Component {
                 >
                   Signup
                 </Button>
-                </Link>
                 
               </Segment>
             </Form>
@@ -142,7 +142,8 @@ class RegistrationForm extends React.Component {
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error  };
+    error: state.auth.error,
+    status_code: state.auth.status_code  };
 };
 
 const mapDispatchToProps = dispatch => {

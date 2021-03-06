@@ -14,6 +14,13 @@ export const authSuccess = token => {
   };
 };
 
+export const authSignupSuccess = status_code => {
+  return {
+    type: actionTypes.AUTH_SUCCESS,
+    status_code: status_code
+  };
+};
+
 export const authFail = error => {
   return {
     type: actionTypes.AUTH_FAIL,
@@ -23,7 +30,7 @@ export const authFail = error => {
 
 export const logout = () => {
   localStorage.removeItem("token");
-  localStorage.removeItem("expirationDate");
+  localStorage.removeItem("status_code");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -70,7 +77,11 @@ export const authSignup = (firstname,lastname,email,password,address,dob,company
         company:company
       })
       .then(res => {
-        console.log(res)
+        const status_code = res.data.status_code;
+        if (status_code === 201){
+          localStorage.setItem("status_code", status_code);
+          dispatch(authSuccess(status_code));
+        }
       })
       .catch(err => {
         dispatch(authFail(err));

@@ -7,3 +7,5 @@ export const endpoint = `${localhost}${apiURL}`;
 export const employeesListURL = `${endpoint}/employees/`;
 export const employeeURL = id => `${endpoint}/employee/${id}/`;
 export const employeeCreateURL = `${endpoint}/employee-create/`;
+export const checkoutURL = `${endpoint}/test-payment/`;
+export const saveStripeURL = `${endpoint}/save-stripe-info/`;

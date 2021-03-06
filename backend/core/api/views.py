@@ -1,13 +1,16 @@
 from .models import Employee
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework import status
-from django.http import JsonResponse
 from rest_framework.decorators import api_view
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .serializers import UserSerilaizers, UserLoginSerializer, EmployeeSerializer
+import stripe
+
+
+stripe.api_key='sk_test_'
 
 
 class UserRegistrationView(CreateAPIView):
@@ -22,7 +25,7 @@ class UserRegistrationView(CreateAPIView):
         status_code = status.HTTP_201_CREATED
         response = {
             'success' : 'True',
-            'status code' : status_code,
+            'status_code' : status_code,
             'message': 'User registered  successfully',
             }
         
@@ -178,3 +181,27 @@ class EmployeeDelete(RetrieveAPIView):
                 }
         return Response(response, status=status_code)
 	
+
+@api_view(['POST'])
+def test_payment(request):
+    test_payment_intent = stripe.PaymentIntent.create(
+    amount=1000, currency='pln', 
+    payment_method_types=['card'],
+    receipt_email='test@example.com')
+    return Response(status=status.HTTP_200_OK, data=test_payment_intent)
+
+
+def save_stripe_info(request):
+    data = request.data
+    email = data['email']
+    payment_method_id = data['payment_method_id']
+    
+    # creating customer
+    customer = stripe.Customer.create(
+      email=email, payment_method=payment_method_id)
+     
+    return Response(status=status.HTTP_200_OK, 
+      data={
+        'message': 'Success', 
+        'data': {'customer_id': customer.id}   
+      })
