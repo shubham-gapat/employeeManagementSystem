@@ -161,7 +161,7 @@ class ListEmployeeComponent extends Component {
     deleteItem(emplyee){
     
         authAxios
-        .delete(`http://127.0.0.1:8000/uzer/employees-delete/${emplyee.id}/`, {
+        .delete(`http://127.0.0.1:8000/user/employees-delete/${emplyee.id}/`, {
           headers:{
             'Content-type':'application/json',
           },
